@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+    patientsdb:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_DATABASE: 'mediscreen'
+        ports:
+            - "3310:3306"
+        expose:
+            - "3310"
+        volumes:
+            - mediscreen-db:/var/lib/mediscreen
+        container_name: patients_db
+        networks:
+            - system
+            - admin
+    adminer:
+        image: adminer
+        restart: always
+        ports: 
+            - "9000:8080"
+        expose:
+            - "9000"
+        networks:
+            - admin       
+volumes:
+    mediscreen-db:
+
+networks:
+    system:
+    admin:
