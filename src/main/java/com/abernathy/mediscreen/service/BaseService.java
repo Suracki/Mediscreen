@@ -2,6 +2,9 @@ package com.abernathy.mediscreen.service;
 
 import com.abernathy.mediscreen.domain.DomainElement;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -62,6 +65,16 @@ public abstract class BaseService <E extends DomainElement> {
             return getType() + "/add";
         }
         return getType() + "/add";
+    }
+
+    public ResponseEntity<String> get(Integer id, Model model) {
+        try {
+            E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
+            return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            return new ResponseEntity<String>("Id " + id + " not found", new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
     }
 
 }
