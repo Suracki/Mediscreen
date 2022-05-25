@@ -77,4 +77,10 @@ public abstract class BaseService <E extends DomainElement> {
         }
     }
 
+    public String view(Integer id, Model model) {
+        E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
+        model.addAttribute("currentPatient", e);
+        return getType() + "/view";
+    }
+
 }
