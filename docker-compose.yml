@@ -18,6 +18,23 @@ services:
         networks:
             - system
             - admin
+    patientsdb-test:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_DATABASE: 'mediscreen-test'
+        ports:
+            - "3311:3306"
+        expose:
+            - "3311"
+        volumes:
+            - mediscreen-db:/var/lib/mediscreen-test
+        container_name: patients_db-test
+        networks:
+            - system
+            - admin
     adminer:
         image: adminer
         restart: always

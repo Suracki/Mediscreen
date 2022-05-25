@@ -24,6 +24,8 @@ public abstract class BaseService <E extends DomainElement> {
         return className.substring(0,1).toLowerCase() + className.substring(1);
     }
 
+    //Methods to serve Front End requests
+
     /**
      * Method to populate Model for frontend
      * Obtains all elements of this type from repository and adds to model
@@ -67,6 +69,14 @@ public abstract class BaseService <E extends DomainElement> {
         return getType() + "/add";
     }
 
+    public String view(Integer id, Model model) {
+        E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
+        model.addAttribute("currentPatient", e);
+        return getType() + "/view";
+    }
+
+    //Methods to serve REST API requests
+
     public ResponseEntity<String> get(Integer id, Model model) {
         try {
             E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
@@ -77,10 +87,13 @@ public abstract class BaseService <E extends DomainElement> {
         }
     }
 
-    public String view(Integer id, Model model) {
-        E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
-        model.addAttribute("currentPatient", e);
-        return getType() + "/view";
+    public ResponseEntity<String> addPatient(E e, BindingResult result, Model model) {
+        if (!result.hasErrors()){
+            repository.save(e);
+            model.addAttribute(getType() + "s", repository.findAll());
+            return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<String>("Failed to add new entry.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
 }

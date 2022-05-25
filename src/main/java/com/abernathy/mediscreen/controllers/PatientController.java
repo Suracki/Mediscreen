@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,6 +21,7 @@ public class PatientController {
 
     private static final Logger logger = LogManager.getLogger("PatientController");
 
+    //Endpoints for serving front end
     @RequestMapping("/patient/list")
     public String home(Model model)
     {
@@ -43,16 +41,24 @@ public class PatientController {
         return patientService.validate(patient,result,model);
     }
 
-    @GetMapping("/patient/get/{id}")
-    public ResponseEntity<String> getPatient(@PathVariable("id") Integer id, Model model) {
-        logger.info("User connected to /patient/get endpoint with id " + id);
-        return patientService.get(id, model);
-    }
-
     @GetMapping("/patient/view/{id}")
     public String viewPatient(@PathVariable("id") Integer id, Model model) {
         logger.info("User connected to /patient/view endpoint with id " + id);
         return patientService.view(id, model);
+    }
+
+    //Endpoints for serving REST API
+
+    @PostMapping("/patient/api/add")
+    public ResponseEntity<String> addPatientApi(@Valid @RequestBody Patient patient, BindingResult result, Model model) {
+        logger.info("User connected to /patient/add endpoint");
+        return patientService.addPatient(patient, result, model);
+    }
+
+    @GetMapping("/patient/api/get/{id}")
+    public ResponseEntity<String> getPatientApi(@PathVariable("id") Integer id, Model model) {
+        logger.info("User connected to /patient/get endpoint with id " + id);
+        return patientService.get(id, model);
     }
 
 }
