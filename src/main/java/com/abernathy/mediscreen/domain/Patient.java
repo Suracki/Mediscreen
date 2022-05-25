@@ -77,13 +77,13 @@ public class Patient implements DomainElement {
 
     @Override
     public String toString() {
-        return "Patient [patientId=" + patientId +
-                ", familyName=" + familyName +
-                ", givenName=" + givenName +
-                ", dob=" + dob +
-                ", sex=" + sex +
-                ", address=" + address +
-                ", phone=" + phone +"]";
+        return "{\"patient\":{\"patientId\": \"" + patientId +
+                "\", \"familyName\": \"" + familyName +
+                "\", \"givenName\": \"" + givenName +
+                "\", \"dob\": \"" + dob +
+                "\", \"sex\": \"" + sex +
+                "\", \"address\": \"" + address +
+                "\", \"phone\": \"" + phone +"\"}}";
     }
 
     public void setId(Integer id) {
