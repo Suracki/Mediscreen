@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 
@@ -22,6 +23,13 @@ public class PatientController {
     PatientService patientService;
 
     private static final Logger logger = LogManager.getLogger("PatientController");
+
+    @RequestMapping("/patient/list")
+    public String home(Model model)
+    {
+        logger.info("User connected to /patient/list endpoint");
+        return patientService.home(model);
+    }
 
     @GetMapping("/patient/add")
     public String addPatient(Patient patient) {
@@ -39,6 +47,12 @@ public class PatientController {
     public ResponseEntity<String> getPatient(@PathVariable("id") Integer id, Model model) {
         logger.info("User connected to /patient/get endpoint with id " + id);
         return patientService.get(id, model);
+    }
+
+    @GetMapping("/patient/view/{id}")
+    public String viewPatient(@PathVariable("id") Integer id, Model model) {
+        logger.info("User connected to /patient/view endpoint with id " + id);
+        return patientService.view(id, model);
     }
 
 }
