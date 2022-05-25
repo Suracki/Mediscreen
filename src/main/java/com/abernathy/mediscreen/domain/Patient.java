@@ -3,6 +3,9 @@ package com.abernathy.mediscreen.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -11,12 +14,18 @@ public class Patient implements DomainElement {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int patientId;
+    @NotEmpty(message = "Family Name is mandatory")
     private String familyName;
+    @NotEmpty(message = "Given Name is mandatory")
     private String givenName;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dob;
+    @Size(min=1, max=1, message="Sex must be entered as either 'M' or 'F'")
     private String sex;
+    @NotEmpty(message = "Address is mandatory")
     private String address;
+    @Pattern(regexp = "^\\d\\d\\d-{1}\\d\\d\\d-{1}\\d\\d\\d\\d$",
+    message="Phone must be entered in the format 123-456-7890")
     private String phone;
 
     public int getPatientId() {

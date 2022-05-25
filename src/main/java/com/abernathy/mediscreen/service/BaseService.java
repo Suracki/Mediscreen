@@ -62,7 +62,7 @@ public abstract class BaseService <E extends DomainElement> {
         if (!result.hasErrors()){
             repository.save(e);
             model.addAttribute(getType() + "s", repository.findAll());
-            return getType() + "/add";
+            return "redirect:/" + getType() + "/list";
         }
         return getType() + "/add";
     }
