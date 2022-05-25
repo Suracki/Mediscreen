@@ -20,7 +20,7 @@ public class Patient implements DomainElement {
     private String givenName;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dob;
-    @Size(min=1, max=1, message="Sex must be entered as either 'M' or 'F'")
+    @Pattern(regexp = "^[FM]|[fm]$", message="Sex must be entered as either 'M' or 'F'")
     private String sex;
     @NotEmpty(message = "Address is mandatory")
     private String address;
