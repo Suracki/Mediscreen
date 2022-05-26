@@ -69,15 +69,69 @@ public abstract class BaseService <E extends DomainElement> {
         return getType() + "/add";
     }
 
+    /**
+     * Method to populate View DomainElement page
+     * Obtains DomainElement with specific ID from repository and adds to model
+     * Then returns redirect to view url
+     *
+     * @param id id parameter of DomainElement
+     * @param model Model object to hold data loaded from repo
+     * @return url String
+     */
     public String view(Integer id, Model model) {
         E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
         model.addAttribute("currentPatient", e);
         return getType() + "/view";
     }
 
+    /**
+     * Method to get redirect for form to update existing DomainElement
+     * Verifies that privided ID does match an element in the repo
+     * Then returns url to update form
+     *
+     * @param id DomainElement's ID value
+     * @param model Model object
+     * @return url string
+     */
+    public String showUpdateForm(Integer id, Model model) {
+        DomainElement e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " id:" + id));
+        model.addAttribute(getType(), e);
+        return getType() + "/update";
+    }
+
+    /**
+     * Method to validate provided DomainElement
+     * Updates existing element in repo if valid & updates model
+     * Returns to update form if not valid
+     *
+     * @param id DomainElement's ID value
+     * @param e DomainElement with updated fields
+     * @param result BindingResult for validation
+     * @param model Model object
+     * @return url string
+     */
+    public String update(Integer id, E e,
+                         BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return getType() + "/update";
+        }
+
+        e.setId(id);
+        repository.save(e);
+        model.addAttribute(getType() + "s", repository.findAll());
+        return "redirect:/" + getType() + "/list";
+    }
+
     //Methods to serve REST API requests
 
-    public ResponseEntity<String> get(Integer id, Model model) {
+    /**
+     * Method to generate ResponseEntity for DomainElement get requests received via API
+     *
+     * @param id id parameter of element
+     * @param model Model object to hold data loaded from repo
+     * @return url String
+     */
+    public ResponseEntity<String> getFromApi(Integer id, Model model) {
         try {
             E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
             return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.OK);
@@ -87,13 +141,51 @@ public abstract class BaseService <E extends DomainElement> {
         }
     }
 
-    public ResponseEntity<String> addPatient(E e, BindingResult result, Model model) {
+    /**
+     * Method to validate provided DomainElement received via API post request
+     * Adds DomainElement to repository if valid & updates model
+     *
+     * @param e DomainElement object to be added
+     * @param result BindingResult for validation
+     * @param model Model object
+     * @return ResponseEntity JSON of added element and 201 if valid, 400 if invalid
+     */
+    public ResponseEntity<String> addFromApi(E e, BindingResult result, Model model) {
         if (!result.hasErrors()){
             repository.save(e);
             model.addAttribute(getType() + "s", repository.findAll());
             return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>("Failed to add new entry.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("Failed to add new entry", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Method to validate provided DomainElement received via put request
+     * Updates existing element in repo if valid & updates model
+     *
+     * @param e DomainElement with updated fields
+     * @param result BindingResult for validation
+     * @param model Model object
+     * @return ResponseEntity JSON of updated element and 200 if valid,
+     *         ResponseEntity JSON of requested update and 400 if invalid,
+     *         ResponseEntity JSON of requested update and 404 if ID not found in database,
+     */
+    public ResponseEntity<String> updateFromApi(E e,
+                         BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            repository.findById(e.getId()).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + e.getId()));
+        }
+        catch (IllegalArgumentException error) {
+            return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+
+        repository.save(e);
+        model.addAttribute(getType() + "s", repository.findAll());
+        return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.OK);
     }
 
 }

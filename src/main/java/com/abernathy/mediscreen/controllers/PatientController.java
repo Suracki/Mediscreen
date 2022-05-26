@@ -52,13 +52,13 @@ public class PatientController {
     @PostMapping("/patient/api/add")
     public ResponseEntity<String> addPatientApi(@Valid @RequestBody Patient patient, BindingResult result, Model model) {
         logger.info("User connected to /patient/add endpoint");
-        return patientService.addPatient(patient, result, model);
+        return patientService.addFromApi(patient, result, model);
     }
 
     @GetMapping("/patient/api/get/{id}")
     public ResponseEntity<String> getPatientApi(@PathVariable("id") Integer id, Model model) {
         logger.info("User connected to /patient/get endpoint with id " + id);
-        return patientService.get(id, model);
+        return patientService.getFromApi(id, model);
     }
 
 }
