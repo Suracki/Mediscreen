@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
@@ -88,6 +89,83 @@ public class PatientControllerUITests {
                         .accept(MediaType.ALL)).andReturn();
 
         //Verify no entres are added to DB and we remain on add page (200)
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+        Mockito.verify(patientRepository, Mockito.times(0)).save(any(Patient.class));
+    }
+
+    @Test
+    public void patientControllerGetViewPatientPage() throws Exception {
+
+        when(patientRepository.findById(1)).thenReturn(java.util.Optional.of(new Patient()));
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/patient/view/1").accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+    }
+
+    @Test
+    public void patientControllerGetUpdatePatientForm() throws Exception {
+
+        when(patientRepository.findById(1)).thenReturn(java.util.Optional.of(new Patient()));
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/patient/update/1").accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+    }
+
+    @Test
+    public void patientControllerPostUpdatesEntry() throws Exception {
+
+        when(patientRepository.findById(1)).thenReturn(java.util.Optional.of(new Patient()));
+        MvcResult mvcResult = mockMvc.perform(
+                post("/patient/update/1")
+                        .param("patientId", "1")
+                        .param("familyName", "testname")
+                        .param("givenName", "testname")
+                        .param("dob","2015-12-31T00:00:00.000Z")
+                        .param("sex", "M")
+                        .param("address", "testaddress")
+                        .param("phone", "111-222-3333")
+                        .accept(MediaType.ALL)).andReturn();
+
+        //Verify entry is updated in DB and we are redirected (302)
+        assertTrue(mvcResult.getResponse().getStatus() == 302);
+        Mockito.verify(patientRepository, Mockito.times(1)).save(any(Patient.class));
+    }
+
+    @Test
+    public void patientControllerPostDoesNotUpdateInvalidEntry() throws Exception {
+
+        when(patientRepository.findById(1)).thenReturn(java.util.Optional.of(new Patient()));
+        MvcResult mvcResult = mockMvc.perform(
+                post("/patient/update/1")
+                        .param("patientId", "1")
+                        .param("familyName", "testname")
+                        .param("givenName", "testname")
+                        .param("dob","2015-12-31T00:00:00.000Z")
+                        .param("sex", "M")
+                        .param("address", "testaddress")
+                        .param("phone", "1112223333")
+                        .accept(MediaType.ALL)).andReturn();
+
+        //Verify entry is not updated in DB and we remain on form (200)
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+        Mockito.verify(patientRepository, Mockito.times(0)).save(any(Patient.class));
+    }
+
+    @Test
+    public void patientControllerPostDoesNotUpdateWithInvalidID() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(
+                post("/patient/update/1")
+                        .param("patientId", "1")
+                        .param("familyName", "testname")
+                        .param("givenName", "testname")
+                        .param("dob","2015-12-31T00:00:00.000Z")
+                        .param("sex", "M")
+                        .param("address", "testaddress")
+                        .param("phone", "1112223333")
+                        .accept(MediaType.ALL)).andReturn();
+
+        //Verify entry is not updated in DB and we remain on form (200)
         assertTrue(mvcResult.getResponse().getStatus() == 200);
         Mockito.verify(patientRepository, Mockito.times(0)).save(any(Patient.class));
     }
