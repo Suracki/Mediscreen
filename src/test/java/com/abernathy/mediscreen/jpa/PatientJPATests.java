@@ -59,7 +59,7 @@ public class PatientJPATests {
         testPatientOne.setAddress("AddressOne");
         testPatientOne.setDob(new Date());
         testPatientOne.setPhone("111-222-3333");
-        patientRepository.save(testPatientOne);
+        int idOne = patientRepository.save(testPatientOne).getPatientId();
 
         Patient testPatientTwo = new Patient();
         testPatientTwo.setFamilyName("FamilyNameTwo");
@@ -67,14 +67,46 @@ public class PatientJPATests {
         testPatientTwo.setAddress("AddressTwo");
         testPatientTwo.setDob(new Date());
         testPatientTwo.setPhone("111-222-3333");
-        patientRepository.save(testPatientTwo);
+        int idTwo = patientRepository.save(testPatientTwo).getPatientId();
 
-        assertNotNull(patientRepository.findById(1));
-        assertNotNull(patientRepository.findById(2));
-        Patient loadPatientOne = patientRepository.findById(1).get();
-        Patient loadPatientTwo = patientRepository.findById(2).get();
+        assertNotNull(patientRepository.findById(idOne));
+        assertNotNull(patientRepository.findById(idTwo));
+        Patient loadPatientOne = patientRepository.findById(idOne).get();
+        Patient loadPatientTwo = patientRepository.findById(idTwo).get();
         assertEquals(testPatientOne.getFamilyName(), loadPatientOne.getFamilyName());
         assertEquals(testPatientTwo.getFamilyName(), loadPatientTwo.getFamilyName());
+    }
+
+    @Test
+    void testUpdatePatientEntity() {
+        //Add a patient to the database and get name from database for later comparison
+        Patient testPatientOne = new Patient();
+        testPatientOne.setFamilyName("FamilyNameOne");
+        testPatientOne.setGivenName("GivenNameOne");
+        testPatientOne.setAddress("AddressOne");
+        testPatientOne.setDob(new Date());
+        testPatientOne.setPhone("111-222-3333");
+        int patientId = patientRepository.save(testPatientOne).getPatientId();
+
+        String loadFamilyNameBeforeUpdate = patientRepository.findById(patientId).get().getFamilyName();
+        String loadGivenNameBeforeUpdate = patientRepository.findById(patientId).get().getGivenName();
+
+        //Update the patient in the database and get the updated names for comparison
+        Patient testPatientTwo = new Patient();
+        testPatientTwo.setId(patientId);
+        testPatientTwo.setFamilyName("FamilyNameOne");
+        testPatientTwo.setGivenName("GivenNameTwo");
+        testPatientTwo.setAddress("AddressTwo");
+        testPatientTwo.setDob(new Date());
+        testPatientTwo.setPhone("111-222-3333");
+
+        patientRepository.save(testPatientTwo);
+        String loadFamilyNameAfterUpdate = patientRepository.findById(patientId).get().getFamilyName();
+        String loadGivenNameAfterUpdate = patientRepository.findById(patientId).get().getGivenName();
+
+        //Assert that first name has changed, last name has not
+        assertEquals(loadFamilyNameBeforeUpdate, loadFamilyNameAfterUpdate);
+        assertNotEquals(loadGivenNameBeforeUpdate, loadGivenNameAfterUpdate);
     }
 
 }
