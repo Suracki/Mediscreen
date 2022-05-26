@@ -47,6 +47,19 @@ public class PatientController {
         return patientService.view(id, model);
     }
 
+    @GetMapping("/patient/update/{id}")
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+        logger.info("User connected to /patient/update/ GET endpoint for patient with id " + id);
+        return patientService.showUpdateForm(id, model);
+    }
+
+    @PostMapping("/patient/update/{id}")
+    public String updateRuleName(@PathVariable("id") Integer id, @Valid Patient patient,
+                                 BindingResult result, Model model) {
+        logger.info("User connected to /ruleName/update/ POST endpoint for patient with id " + id);
+        return patientService.update(id, patient, result, model);
+    }
+
     //Endpoints for serving REST API
 
     @PostMapping("/patient/api/add")
@@ -59,6 +72,12 @@ public class PatientController {
     public ResponseEntity<String> getPatientApi(@PathVariable("id") Integer id, Model model) {
         logger.info("User connected to /patient/get endpoint with id " + id);
         return patientService.getFromApi(id, model);
+    }
+
+    @PutMapping("/patient/api/update")
+    public ResponseEntity<String> updatePatientApi(@Valid @RequestBody Patient patient, BindingResult result, Model model) {
+        logger.info("User connected to /patient/add endpoint");
+        return patientService.updateFromApi(patient, result, model);
     }
 
 }
