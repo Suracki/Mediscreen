@@ -60,6 +60,14 @@ public class Patient implements DomainElement {
         this.dob = dob;
     }
 
+    public void setId(int patientId) {
+        this.patientId = patientId;
+    }
+
+    public int getId() {
+        return patientId;
+    }
+
     public String getSex() {
         return sex;
     }
