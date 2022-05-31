@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS patient (
+  patientId tinyint NOT NULL AUTO_INCREMENT,
+  familyName VARCHAR(100) NOT NULL,
+  givenName VARCHAR(100) NOT NULL,
+  dob DATE NOT NULL,
+  sex VARCHAR(1) NOT NULL,
+  address VARCHAR(100) NOT NULL,
+  phone VARCHAR(12) NOT NULL
+);

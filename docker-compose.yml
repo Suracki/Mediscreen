@@ -1,0 +1,41 @@
+version: '3.1'
+
+services:
+    patientdb:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_DATABASE: 'mediscreen'
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+        ports:
+            - "3310:3306"
+        expose:
+            - "3310"
+        volumes:
+            - mediscreen-db:/var/lib/mediscreen
+        container_name: patientdb
+        networks:
+            - system
+    mediscreenapp:
+        build:
+            context: ./Mediscreen
+            dockerfile: Dockerfile
+        container_name: mediscreenapp
+        depends_on:
+            patientdb:
+                condition: service_healthy
+        ports:
+            - "8080:8080"
+        networks:
+            - system            
+volumes:
+    mediscreen-db:
+
+networks:
+    system:
+
