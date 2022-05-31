@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+    patientdb-test:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_DATABASE: 'mediscreen-test'
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+        ports:
+            - "3315:3306"
+        expose:
+            - "3315"
+        volumes:
+            - mediscreen-db:/var/lib/mediscreen-test
+        container_name: patientdb-test
+volumes:
+    mediscreen-db:
+
