@@ -151,24 +151,4 @@ public class PatientControllerUITests {
         Mockito.verify(patientRepository, Mockito.times(0)).save(any(Patient.class));
     }
 
-    @Test
-    public void patientControllerPostDoesNotUpdateWithInvalidID() throws Exception {
-
-        MvcResult mvcResult = mockMvc.perform(
-                post("/patient/update/1")
-                        .param("patientId", "1")
-                        .param("familyName", "testname")
-                        .param("givenName", "testname")
-                        .param("dob","2015-12-31T00:00:00.000Z")
-                        .param("sex", "M")
-                        .param("address", "testaddress")
-                        .param("phone", "1112223333")
-                        .accept(MediaType.ALL)).andReturn();
-
-        //Verify entry is not updated in DB and we remain on form (200)
-        assertTrue(mvcResult.getResponse().getStatus() == 200);
-        Mockito.verify(patientRepository, Mockito.times(0)).save(any(Patient.class));
-    }
-
-
 }

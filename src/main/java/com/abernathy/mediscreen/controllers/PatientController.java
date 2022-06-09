@@ -2,6 +2,8 @@ package com.abernathy.mediscreen.controllers;
 
 import com.abernathy.mediscreen.domain.Patient;
 import com.abernathy.mediscreen.service.PatientService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class PatientController {
     PatientService patientService;
 
     private static final Logger logger = LogManager.getLogger("PatientController");
+
+    private Gson gson = new GsonBuilder().create();
 
     //Endpoints for serving front end
     @RequestMapping("/patient/list")
@@ -78,6 +82,15 @@ public class PatientController {
     public ResponseEntity<String> updatePatientApi(@Valid @RequestBody Patient patient, BindingResult result, Model model) {
         logger.info("User connected to /patient/add endpoint");
         return patientService.updateFromApi(patient, result, model);
+    }
+
+    //Endpoints for serving Retrofit calls
+
+    @GetMapping("/patient/api/retro/get/{id}")
+    @ResponseBody
+    public String getPatientRetro(@PathVariable("id") Integer id) {
+        logger.info("Service call made to /patient/api/retro/get/ endpoint with id " + id);
+        return gson.toJson(patientService.getFromRetro(id));
     }
 
 }

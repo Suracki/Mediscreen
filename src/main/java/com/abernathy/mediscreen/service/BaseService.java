@@ -188,4 +188,22 @@ public abstract class BaseService <E extends DomainElement> {
         return new ResponseEntity<String>(e.toString(), new HttpHeaders(), HttpStatus.OK);
     }
 
+    //Methods to serve RETROFIT API requests
+
+    /**
+     * Method to obtain DomainElement for get requests received via other application services
+     *
+     * @param id id parameter of element
+     * @return DomainElement
+     */
+    public E getFromRetro(Integer id) {
+        try {
+            E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
+            return e;
+        }
+        catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
 }
