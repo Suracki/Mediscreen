@@ -1,6 +1,7 @@
 package com.abernathy.mediscreen.service;
 
 import com.abernathy.mediscreen.domain.DomainElement;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,11 @@ import javax.validation.Valid;
 public abstract class BaseService <E extends DomainElement> {
 
     private JpaRepository<E, Integer> repository;
+
+    @Value("${docker.assessment.url}")
+    private String urlAsmt;
+    @Value("${docker.history.url}")
+    private String urlNote;
 
     public BaseService(JpaRepository<E, Integer> repository) {
         this.repository = repository;
@@ -37,6 +43,8 @@ public abstract class BaseService <E extends DomainElement> {
     public String home(Model model)
     {
         model.addAttribute(getType() + "s", repository.findAll());
+        model.addAttribute("urlAsmt", urlAsmt);
+        model.addAttribute("urlNote", urlNote);
         return getType() + "/list";
     }
 
@@ -64,6 +72,8 @@ public abstract class BaseService <E extends DomainElement> {
         if (!result.hasErrors()){
             repository.save(e);
             model.addAttribute(getType() + "s", repository.findAll());
+            model.addAttribute("urlAsmt", urlAsmt);
+            model.addAttribute("urlNote", urlNote);
             return "redirect:/" + getType() + "/list";
         }
         return getType() + "/add";
@@ -81,6 +91,7 @@ public abstract class BaseService <E extends DomainElement> {
     public String view(Integer id, Model model) {
         E e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " Id:" + id));
         model.addAttribute("currentPatient", e);
+        model.addAttribute("urlNote", urlNote);
         return getType() + "/view";
     }
 
@@ -96,6 +107,7 @@ public abstract class BaseService <E extends DomainElement> {
     public String showUpdateForm(Integer id, Model model) {
         DomainElement e = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid " + getType() + " id:" + id));
         model.addAttribute(getType(), e);
+        model.addAttribute("urlNote", urlNote);
         return getType() + "/update";
     }
 
@@ -119,6 +131,8 @@ public abstract class BaseService <E extends DomainElement> {
         e.setId(id);
         repository.save(e);
         model.addAttribute(getType() + "s", repository.findAll());
+        model.addAttribute("urlAsmt", urlAsmt);
+        model.addAttribute("urlNote", urlNote);
         return "redirect:/" + getType() + "/list";
     }
 
