@@ -267,7 +267,7 @@ public class PatientControllerAPITests {
 
         //Create mock returns
         List<Integer> patientIds = Arrays.asList(1,2,3);
-        List<String> patientNames = Arrays.asList("g1","f1","g2","f2","g3","f3");
+        List<String> patientNames = Arrays.asList("g1,f1","g2,f2","g3,f3");
 
         //If our service works and asks the repo for patient with id 1, return our mock patient
         when(patientRepository.getAllPatientIds()).thenReturn(patientIds);
@@ -279,6 +279,7 @@ public class PatientControllerAPITests {
 
         //Verify entry is retrieved from DB, and we get success response (200)
         assertTrue(mvcResult.getResponse().getStatus() == 200);
+        assertTrue(mvcResult.getResponse().getContentAsString().equals("{\"1\":\"g1f1\",\"2\":\"g2f2\",\"3\":\"g3f3\"}"));
         Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientIds();
         Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientNames();
     }

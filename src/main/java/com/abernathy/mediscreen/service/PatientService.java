@@ -2,6 +2,8 @@ package com.abernathy.mediscreen.service;
 
 import com.abernathy.mediscreen.domain.Patient;
 import com.abernathy.mediscreen.repository.PatientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ import java.util.Map;
 public class PatientService {
 
     private PatientRepository repository;
+
+    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
 
     @Value("${docker.assessment.url}")
     private String urlAsmt;
@@ -224,30 +228,27 @@ public class PatientService {
      *
      * @return Map of Id to GivenName_FamilyName
      */
-    public Map<Integer, String> getIdsFromRetro() {
+    public Map<Integer, String> getPatientIndexFromRetro() {
         try {
             List<Integer> patientIds = repository.getAllPatientIds();
             List<String> patientNames = repository.getAllPatientNames();
-            System.out.println(patientIds.size());
-            System.out.println(patientNames.size());
 
-            if (patientNames.size() != patientIds.size()*2) {
-                System.out.println("Error?");
-                throw new IllegalStateException("Database has invalid patient data");
+            if (patientNames.size() != patientIds.size()) {
+                throw new IllegalStateException("Database returned invalid patient data. IDs: " + patientIds.size() + " Names: " + patientNames.size());
             }
 
             Map<Integer, String> index = new HashMap<>();
 
             //For each index, get the corresponding first & last name, and create new PatientIndexElement with this
             for (int i = 0; i < patientIds.size(); i++) {
-                index.put(patientIds.get(i), patientNames.get(2*i) + " " + patientNames.get(2*i+1));
+                index.put(patientIds.get(i), patientNames.get(i).replace(",", " "));
             }
 
             return index;
         }
         catch (IllegalStateException e) {
             //Number of indexes did not match number of first & last names
-            System.out.println("Error: " + e);
+            logger.error("Error: " + e);
             return null;
         }
     }

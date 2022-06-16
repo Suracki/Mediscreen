@@ -129,6 +129,9 @@ public class PatientJPATests {
         patientRepository.save(testPatientTwo);
 
         assertEquals(2, patientRepository.getAllPatientIds().size());
+        System.out.println("IDs: " + patientRepository.getAllPatientIds() + " Size: " + patientRepository.getAllPatientIds().size());
+        assertEquals(2, patientRepository.getAllPatientNames().size());
+        System.out.println("Names: " + patientRepository.getAllPatientNames() + " Size: " + patientRepository.getAllPatientNames().size());
         assertEquals("[TestGiven,TestFam, TestGivenTwo,TestFamTwo]", patientRepository.getAllPatientNames().toString());
     }
 
