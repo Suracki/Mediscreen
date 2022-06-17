@@ -34,7 +34,7 @@
 				<td style="width: 10%" th:text="${patient.patientId}"></td>
 				<td th:text="${patient.familyName}"></td>
 				<td th:text="${patient.givenName}"></td>
-				<td th:text="${patient.dob}"></td>
+				<td th:text="${#dates.format(patient.dob, 'dd-MM-yyyy')}"></td>
 				<td th:text="${patient.sex}"></td>
 				<td th:text="${patient.address}"></td>
 				<td th:text="${patient.phone}"></td>

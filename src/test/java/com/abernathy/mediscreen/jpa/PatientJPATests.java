@@ -109,4 +109,30 @@ public class PatientJPATests {
         assertNotEquals(loadGivenNameBeforeUpdate, loadGivenNameAfterUpdate);
     }
 
+    @Test
+    void testGetAllIdsAndNames() {
+        Patient testPatient = new Patient();
+        testPatient.setFamilyName("TestFam");
+        testPatient.setGivenName("TestGiven");
+        testPatient.setAddress("TestAddress");
+        testPatient.setDob(new Date());
+        testPatient.setPhone("100-222-3333");
+        patientRepository.save(testPatient);
+
+        Patient testPatientTwo = new Patient();
+        testPatientTwo.setFamilyName("TestFamTwo");
+        testPatientTwo.setGivenName("TestGivenTwo");
+        testPatientTwo.setAddress("AddressTwo");
+        testPatientTwo.setDob(new Date());
+        testPatientTwo.setPhone("111-222-3333");
+
+        patientRepository.save(testPatientTwo);
+
+        assertEquals(2, patientRepository.getAllPatientIds().size());
+        System.out.println("IDs: " + patientRepository.getAllPatientIds() + " Size: " + patientRepository.getAllPatientIds().size());
+        assertEquals(2, patientRepository.getAllPatientNames().size());
+        System.out.println("Names: " + patientRepository.getAllPatientNames() + " Size: " + patientRepository.getAllPatientNames().size());
+        assertEquals("[TestGiven,TestFam, TestGivenTwo,TestFamTwo]", patientRepository.getAllPatientNames().toString());
+    }
+
 }

@@ -93,4 +93,11 @@ public class PatientController {
         return gson.toJson(patientService.getFromRetro(id));
     }
 
+    @GetMapping("/patient/api/retro/get/index")
+    @ResponseBody
+    public String getPatientIndex() {
+        logger.info("Service call made to /patient/api/retro/get/index endpoint");
+        return gson.toJson(patientService.getPatientIndexFromRetro());
+    }
+
 }
