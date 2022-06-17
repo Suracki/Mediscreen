@@ -15,6 +15,14 @@ public class HomeController {
     @Value("${docker.history.url}")
     private String urlNote;
 
+    /**
+     * Mapping for GET
+     *
+     * Serves homepage for application
+     *
+     * @param model Model
+     * @return list notes homepage
+     */
     @GetMapping("/")
     public String getHomepage(Model model) {
         logger.info("User connected to / endpoint");

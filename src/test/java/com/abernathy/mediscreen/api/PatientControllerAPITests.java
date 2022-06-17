@@ -279,7 +279,7 @@ public class PatientControllerAPITests {
 
         //Verify entry is retrieved from DB, and we get success response (200)
         assertTrue(mvcResult.getResponse().getStatus() == 200);
-        assertTrue(mvcResult.getResponse().getContentAsString().equals("{\"1\":\"g1f1\",\"2\":\"g2f2\",\"3\":\"g3f3\"}"));
+        assertTrue(mvcResult.getResponse().getContentAsString().equals("{\"1\":\"g1 f1\",\"2\":\"g2 f2\",\"3\":\"g3 f3\"}"));
         Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientIds();
         Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientNames();
     }
