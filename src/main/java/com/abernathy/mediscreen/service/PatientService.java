@@ -145,10 +145,9 @@ public class PatientService {
      * Method to generate ResponseEntity for Patient get requests received via API
      *
      * @param id id parameter of patient
-     * @param model Model object to hold data loaded from repo
      * @return url String
      */
-    public ResponseEntity<String> getFromApi(Integer id, Model model) {
+    public ResponseEntity<String> getFromApi(Integer id) {
         try {
             Patient patient = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
             return new ResponseEntity<String>(patient.toString(), new HttpHeaders(), HttpStatus.OK);
@@ -164,13 +163,11 @@ public class PatientService {
      *
      * @param patient Patient object to be added
      * @param result BindingResult for validation
-     * @param model Model object
      * @return ResponseEntity JSON of added element and 201 if valid, 400 if invalid
      */
-    public ResponseEntity<String> addFromApi(Patient patient, BindingResult result, Model model) {
+    public ResponseEntity<String> addFromApi(Patient patient, BindingResult result) {
         if (!result.hasErrors()){
             repository.save(patient);
-            model.addAttribute("patients", repository.findAll());
             return new ResponseEntity<String>(patient.toString(), new HttpHeaders(), HttpStatus.CREATED);
         }
         return new ResponseEntity<String>("Failed to add new entry", new HttpHeaders(), HttpStatus.BAD_REQUEST);
@@ -182,13 +179,12 @@ public class PatientService {
      *
      * @param patient Patient with updated fields
      * @param result BindingResult for validation
-     * @param model Model object
      * @return ResponseEntity JSON of updated patient and 200 if valid,
      *         ResponseEntity JSON of requested update and 400 if invalid,
      *         ResponseEntity JSON of requested update and 404 if ID not found in database,
      */
     public ResponseEntity<String> updateFromApi(Patient patient,
-                                                BindingResult result, Model model) {
+                                                BindingResult result) {
         if (result.hasErrors()) {
             return new ResponseEntity<String>(patient.toString(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
@@ -201,7 +197,6 @@ public class PatientService {
         }
 
         repository.save(patient);
-        model.addAttribute("patients", repository.findAll());
         return new ResponseEntity<String>(patient.toString(), new HttpHeaders(), HttpStatus.OK);
     }
 
