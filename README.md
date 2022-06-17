@@ -66,7 +66,7 @@ In addition to the font end pages, the application also provides REST API endpoi
 ## Getting Started
 
 This microservice is intended to be used as part of the Mediscreen package, and will not operate correctly without the other parts.
-<br>Please refer to the Mediscreen Pagage repository for details on running the package as a whole.
+<br>Please refer to the Mediscreen Package repository for details on running the package as a whole.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
