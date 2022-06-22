@@ -3,14 +3,15 @@
 	  xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8"/>
-	<title>Home</title>
-	<link rel="stylesheet" href="../../css/bootstrap.min.css" >
+	<title>View Patients</title>
+	<link rel="stylesheet" href="/css/bootstrap.min.css" >
 </head>
 <body>
 <div class="container">
 	<div class="row">
 		<div class="col-6">
 			<a href="/patient/list">Patient List</a>&nbsp;|&nbsp;
+			<a th:href="@{http://{url}/patient/note/list(url=${urlNote})}">Patient Notes</a>
 		</div>
 	</div>
 	<div class="row"><h2>Patients</h2></div>
@@ -33,14 +34,15 @@
 				<td style="width: 10%" th:text="${patient.patientId}"></td>
 				<td th:text="${patient.familyName}"></td>
 				<td th:text="${patient.givenName}"></td>
-				<td th:text="${patient.dob}"></td>
+				<td th:text="${#dates.format(patient.dob, 'dd-MM-yyyy')}"></td>
 				<td th:text="${patient.sex}"></td>
 				<td th:text="${patient.address}"></td>
 				<td th:text="${patient.phone}"></td>
 				<td style="width: 15%" class="text-center">
 					<a th:href="@{/patient/view/{id}(id=${patient.patientId})}">View</a>&nbsp;|
 					<a th:href="@{/patient/update/{id}(id=${patient.patientId})}">Edit</a>&nbsp;|&nbsp;
-					<a th:href="@{/patient/delete/{id}(id=${patient.patientId})}">Delete</a>
+					<a th:href="@{http://{url}/patient/note/viewall/{id}(id=${patient.patientId},url=${urlNote})}">Notes</a>&nbsp;|&nbsp;
+					<a th:href="@{http://{url}/assessment/view/{id}(id=${patient.patientId},url=${urlAsmt})}">Assessment</a>
 				</td>
 			</tr>
 			</tbody>

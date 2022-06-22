@@ -4,10 +4,16 @@
 <head>
     <meta charset="utf-8"/>
     <title>View Patient</title>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/css/bootstrap.min.css" >
 </head>
 <body>
 <div class="container">
+    <div class="row">
+        <div class="col-6">
+            <a href="/patient/list">Patient List</a>&nbsp;|&nbsp;
+            <a th:href="@{http://{url}/patient/note/list(url=${urlNote})}">Patient Notes</a>
+        </div>
+    </div>
     <div class="row">
         <h2>View Patient</h2>
     </div>
@@ -28,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><h4>Date of Birth:</h4></label>
-                <td style="width: 10%" th:text="${currentPatient.dob}" class="col-4"></td>
+                <td style="width: 10%" th:text="${#dates.format(currentPatient.dob, 'dd-MM-yyyy')}" class="col-4"></td>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label"><h4>Sex:</h4></label>

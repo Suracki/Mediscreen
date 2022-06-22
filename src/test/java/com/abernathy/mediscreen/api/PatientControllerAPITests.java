@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -233,6 +235,53 @@ public class PatientControllerAPITests {
         assertTrue(mvcResult.getResponse().getStatus() == 404);
         Mockito.verify(patientRepository, Mockito.times(0)).save(any());
 
+    }
+
+    @Test
+    public void patientControllerRetroAPIGetsEntry() throws Exception {
+
+        //Create mock patient
+        Patient patient = new Patient();
+        patient.setFamilyName("testFamilyName");
+        patient.setGivenName("testFirstName");
+        patient.setDob(new Date());
+        patient.setSex("F");
+        patient.setAddress("testAddress");
+        patient.setPhone("111-222-3333");
+
+        //If our service works and asks the repo for patient with id 1, return our mock patient
+        when(patientRepository.findById(1)).thenReturn(java.util.Optional.of(patient));
+
+        //Attempt to retrieve patient
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/patient/api/retro/get/1")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verify entry is retrieved from DB, and we get success response (200)
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+        Mockito.verify(patientRepository, Mockito.times(1)).findById(1);
+
+    }
+
+    @Test
+    public void patientControllerRetroAPIGetsIndex() throws Exception {
+
+        //Create mock returns
+        List<Integer> patientIds = Arrays.asList(1,2,3);
+        List<String> patientNames = Arrays.asList("g1,f1","g2,f2","g3,f3");
+
+        //If our service works and asks the repo for patient with id 1, return our mock patient
+        when(patientRepository.getAllPatientIds()).thenReturn(patientIds);
+        when(patientRepository.getAllPatientNames()).thenReturn(patientNames);
+
+        //Attempt to retrieve patient
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/patient/api/retro/get/index")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verify entry is retrieved from DB, and we get success response (200)
+        assertTrue(mvcResult.getResponse().getStatus() == 200);
+        assertTrue(mvcResult.getResponse().getContentAsString().equals("{\"1\":\"g1 f1\",\"2\":\"g2 f2\",\"3\":\"g3 f3\"}"));
+        Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientIds();
+        Mockito.verify(patientRepository, Mockito.times(1)).getAllPatientNames();
     }
 
 }
